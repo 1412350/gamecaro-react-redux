@@ -3,7 +3,7 @@ import {checkWin} from '../logic/logic'
 
 export const initialState = {
   history: [{
-    board: Array(49).fill(""),
+    board: Array(49).fill(""), //Dung mang 1 chieu gom N*N phan tu thay cho ma tran N*N
     moveLocation: '',
     won: undefined,
     wonLine: undefined,

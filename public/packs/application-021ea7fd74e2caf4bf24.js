@@ -20814,7 +20814,7 @@ function verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps, dis
 
 var initialState = {
   history: [{
-    board: Array(49).fill(""),
+    board: Array(49).fill(""), //Dung mang 1 chieu gom N*N phan tu thay cho ma tran N*N
     moveLocation: '',
     won: undefined,
     wonLine: undefined,
@@ -38048,7 +38048,9 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 var checkWin = function checkWin(board) {
   var winLines = [[0, 1, 2, 3, 4]];
   var maxtrixLength = Math.sqrt(board.length);
-  for (var i = 0; i < board.length; i++) {
+  for (var i = 0; i < board.length; i++) //Duyet mang N*N phan tu
+  //Moi phan tu duyet theo hang, cot, cheo phai, cheo trai
+  {
     // check rows
     if (i % maxtrixLength + 4 < maxtrixLength && i != 0) {
       var line = [i, i + 1, i + 2, i + 3, i + 4];
@@ -38059,7 +38061,7 @@ var checkWin = function checkWin(board) {
       var _line = [i, i + maxtrixLength, i + maxtrixLength * 2, i + maxtrixLength * 3, i + maxtrixLength * 4];
       winLines.push(_line);
     }
-    //check right stants
+    //check right stants (kiem tra duong cheo hop le va du 5 phan tu hop le)
     if (i + (maxtrixLength + 1) * 4 < board.length && i % maxtrixLength + 4 < maxtrixLength) {
       var _line2 = [i, i + maxtrixLength + 1, i + (maxtrixLength + 1) * 2, i + (maxtrixLength + 1) * 3, i + (maxtrixLength + 1) * 4];
       winLines.push(_line2);
@@ -38165,7 +38167,7 @@ var Board = function (_Component) {
     value: function renderSquare(i) {
       var history = this.props.history.slice(0, this.props.stepNum + 1);
       var current = history[history.length - 1];
-      return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__Square__["a" /* default */], { value: current.board[i], wonline: current.wonLine, addSymbol: this.addSymbol.bind(this), symbol: this.props.turn, index: i });
+      return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__Square__["a" /* default */], { value: current.board[i], wonline: current.wonLine, addSymbol: this.addSymbol.bind(this), symbol: this.props.turn, index: i, draw: current.draw });
     }
   }, {
     key: 'render',
@@ -38195,7 +38197,15 @@ var Board = function (_Component) {
       });
       var moves = this.props.history.map(function (step, move) {
         var description = move ? 'Move #' + move + ' (' + step.moveLocation + ')' : 'Game start'; // Thêm moveLocation vào
-        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        if (move == _this2.props.stepNum) return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          'li',
+          { key: move, className: 'selected' },
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'a',
+            { onClick: _this2.jumpToMove.bind(_this2, move) },
+            description
+          )
+        );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
           'li',
           { key: move },
           __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -38209,50 +38219,54 @@ var Board = function (_Component) {
       return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
         null,
-        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          'div',
-          null,
-          'Board'
-        ),
-        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          'div',
-          null,
-          board
-        ),
         current.won ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          'p',
+          'h4',
           null,
           'yay! Winner is ',
           current.won
         ) : current.draw ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          'p',
+          'h4',
           null,
           'We have a draw!!!'
         ) : __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          'p',
+          'h4',
           null,
           ' Next player is ',
           this.props.turn,
           ' '
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          'ol',
-          { reversed: this.props.isReversed ? 'reverse' : '' },
-          this.props.isReversed ? moves.reverse() : moves
+          'div',
+          null,
+          board
         ),
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          'button',
-          { onClick: function onClick() {
-              return _this2.props.reverseMoves();
-            } },
-          'Reverse list'
-        ),
-        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-          'button',
-          { onClick: function onClick() {
-              return _this2.props.startAgain();
-            } },
-          'Reset game'
+          'div',
+          { className: 'moveslist' },
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'h2',
+            null,
+            'MOVES LIST:'
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'ol',
+            { reversed: this.props.isReversed ? 'reverse' : '' },
+            this.props.isReversed ? moves.reverse() : moves
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'button',
+            { onClick: function onClick() {
+                return _this2.props.reverseMoves();
+              } },
+            'Reverse list'
+          ),
+          __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'button',
+            { onClick: function onClick() {
+                return _this2.props.startAgain();
+              } },
+            'Reset game'
+          )
         )
       );
     }
@@ -38355,6 +38369,16 @@ var Square = function Square(props) {
     ) // this.props.value ở đây là giá trị i bên renderSquare(i) của Board
     ;
   }
+  if (props.draw) {
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+      "button",
+      { className: "square draw", onClick: function onClick() {
+          return props.addSymbol(props.index, props.symbol);
+        } },
+      props.value
+    ) // this.props.value ở đây là giá trị i bên renderSquare(i) của Board
+    ;
+  }
   return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
     "button",
     { className: "square", onClick: function onClick() {
@@ -38369,4 +38393,4 @@ var Square = function Square(props) {
 
 /***/ })
 /******/ ]);
-//# sourceMappingURL=application-298c54a0ce802761fddf.js.map
+//# sourceMappingURL=application-021ea7fd74e2caf4bf24.js.map

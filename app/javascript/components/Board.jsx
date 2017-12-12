@@ -15,7 +15,7 @@ class Board extends Component {
   renderSquare(i){
     const history = this.props.history.slice(0, this.props.stepNum + 1);
     const current = history[history.length - 1];
-    return <Square value={current.board[i]} wonline={current.wonLine} addSymbol={this.addSymbol.bind(this)} symbol={this.props.turn} index={i}/>
+    return <Square value={current.board[i]} wonline={current.wonLine} addSymbol={this.addSymbol.bind(this)} symbol={this.props.turn} index={i} draw={current.draw}/>
   }
   
   render(){
@@ -34,17 +34,22 @@ class Board extends Component {
     });
     const moves = this.props.history.map((step, move) => {
       const description = move ? `Move #${move} (${step.moveLocation})` : 'Game start'; // Thêm moveLocation vào
-      return <li key={move}><a onClick={this.jumpToMove.bind(this,move)}>{description}</a></li>
+      if(move == this.props.stepNum)   
+        return <li key={move} className="selected"><a onClick={this.jumpToMove.bind(this,move)}>{description}</a></li>
+      else
+      return <li key={move}><a onClick={this.jumpToMove.bind(this,move)}>{description}</a></li>      
     });
     //
     return(
       <div>
-        <div>Board</div>
+        {current.won ? <h4>yay! Winner is {current.won}</h4> : current.draw ? <h4>We have a draw!!!</h4> : <h4> Next player is {this.props.turn} </h4>}
         <div>{board}</div>
-        {current.won ? <p>yay! Winner is {current.won}</p> : current.draw ? <p>We have a draw!!!</p> : <p> Next player is {this.props.turn} </p>}
-        <ol reversed={this.props.isReversed ? 'reverse' :''}>{this.props.isReversed ? moves.reverse() : moves}</ol>
-        <button onClick={() => this.props.reverseMoves()}>Reverse list</button>
-        <button onClick={() => this.props.startAgain()}>Reset game</button>        
+        <div className="moveslist">
+          <h2>MOVES LIST:</h2>
+          <ol reversed={this.props.isReversed ? 'reverse' :''}>{this.props.isReversed ? moves.reverse() : moves}</ol>
+          <button onClick={() => this.props.reverseMoves()}>Reverse list</button>
+          <button onClick={() => this.props.startAgain()}>Reset game</button>     
+        </div>   
       </div>
     );
   }

@@ -3,7 +3,8 @@ export const checkWin= (board) => {
     [0, 1, 2, 3, 4]
   ];
   const maxtrixLength = Math.sqrt(board.length);
-  for(let i = 0; i < board.length; i++)
+  for(let i = 0; i < board.length; i++) //Duyet mang N*N phan tu
+  //Moi phan tu duyet theo hang, cot, cheo phai, cheo trai
   {
     // check rows
     if (((i%maxtrixLength+4) < maxtrixLength) && (i != 0)) 
@@ -17,7 +18,7 @@ export const checkWin= (board) => {
       const line = [ i,  i + maxtrixLength,  i + maxtrixLength*2,  i + maxtrixLength*3,  i + maxtrixLength*4]
       winLines.push(line);      
     }
-    //check right stants
+    //check right stants (kiem tra duong cheo hop le va du 5 phan tu hop le)
     if (((i+(maxtrixLength+1)*4) < board.length) && ((i%maxtrixLength+4) < maxtrixLength))
     {
       const line = [ i,  i + maxtrixLength + 1,  i + (maxtrixLength+1)*2,  i + (maxtrixLength+1)*3,  i + (maxtrixLength+1)*4]
